@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gulfstream Bays — Project Summary</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F7F6F2;
+    --surface: #FFFFFF;
+    --border: #E0DDD6;
+    --text: #1A1A1A;
+    --text-secondary: #5A5A5A;
+    --accent: #1A3A5C;
+    --accent-light: #E8EFF6;
+    --green: #1A6B3C;
+    --green-bg: #EAF4EE;
+    --red: #8B1A1A;
+    --red-bg: #F5EAEA;
+    --amber: #7A5200;
+    --amber-bg: #FFF3DC;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.7; }
+  .page { max-width: 980px; margin: 0 auto; padding: 60px 40px 100px; }
+
+  /* Header */
+  .doc-header { border-bottom: 2px solid var(--accent); padding-bottom: 24px; margin-bottom: 40px; }
+  .doc-header h1 { font-size: 26px; font-weight: 600; color: var(--accent); letter-spacing: -0.02em; }
+  .doc-header .sub { font-family: var(--mono); font-size: 11px; color: var(--text-secondary); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .doc-header .meta { display: flex; flex-wrap: wrap; gap: 16px 28px; margin-top: 14px; }
+  .doc-header .meta span { font-family: var(--mono); font-size: 11px; color: var(--text-secondary); }
+  .doc-header .meta strong { color: var(--text); font-weight: 500; }
+
+  /* TOC */
+  .toc { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 18px 22px; margin-bottom: 48px; }
+  .toc h3 { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-secondary); margin-bottom: 10px; }
+  .toc-list { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 2px 32px; counter-reset: toc; }
+  .toc-list li { counter-increment: toc; display: flex; gap: 8px; font-size: 13px; padding: 3px 0; }
+  .toc-list li::before { content: counter(toc, decimal-leading-zero); font-family: var(--mono); font-size: 10px; color: var(--text-secondary); flex-shrink: 0; margin-top: 3px; }
+  .toc a { color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+
+  /* Sections */
+  .section { margin-bottom: 52px; }
+  .section-label { font-family: var(--mono); font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-secondary); margin-bottom: 2px; }
+  .section h2 { font-size: 19px; font-weight: 600; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 18px; letter-spacing: -0.01em; }
+  .section h3 { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-secondary); margin: 22px 0 10px; }
+  p { color: var(--text); margin-bottom: 12px; font-weight: 300; }
+
+  /* Key numbers row */
+  .numbers-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; margin: 16px 0; }
+  .num-cell { background: var(--surface); padding: 14px 16px; }
+  .big-number { font-family: var(--mono); font-size: 22px; font-weight: 500; color: var(--accent); letter-spacing: -0.02em; }
+  .number-label { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-secondary); margin-top: 2px; }
+
+  /* Tables */
+  .data-table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 12px; margin: 12px 0; }
+  .data-table th { text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-secondary); font-weight: 500; padding: 7px 10px; background: var(--bg); border-bottom: 1px solid var(--border); }
+  .data-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table .label { color: var(--text-secondary); }
+  .data-table .value { font-weight: 500; color: var(--text); }
+  .data-table .note { color: var(--text-secondary); font-size: 11px; }
+  .data-table .total td { background: var(--accent-light); font-weight: 600; color: var(--accent); border-top: 1px solid #B0C4D8; }
+  .data-table .warn td { background: var(--amber-bg); }
+
+  /* Callouts */
+  .callout { border-radius: 4px; padding: 12px 15px; margin: 12px 0; font-size: 13px; line-height: 1.6; }
+  .callout.green { background: var(--green-bg); border-left: 3px solid var(--green); color: var(--green); }
+  .callout.red { background: var(--red-bg); border-left: 3px solid var(--red); color: var(--red); }
+  .callout.amber { background: var(--amber-bg); border-left: 3px solid var(--amber); color: var(--amber); }
+  .callout.info { background: var(--accent-light); border-left: 3px solid var(--accent); color: var(--accent); }
+  .callout strong { font-weight: 600; display: block; margin-bottom: 3px; }
+
+  /* Two-column blocks */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 12px 0; }
+  .col-block { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 13px 15px; }
+  .col-block h4 { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-secondary); margin-bottom: 9px; }
+  .col-block ul { list-style: none; }
+  .col-block ul li { font-size: 13px; padding: 3px 0; color: var(--text); font-weight: 300; display: flex; gap: 7px; border-bottom: 1px solid var(--bg); }
+  .col-block ul li::before { content: '—'; color: var(--text-secondary); flex-shrink: 0; }
+
+  /* Issue list */
+  .issue-list { list-style: none; }
+  .issue-list li { display: flex; gap: 11px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .issue-list li:last-child { border-bottom: none; }
+  .badge { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.07em; padding: 3px 6px; border-radius: 2px; white-space: nowrap; font-weight: 500; flex-shrink: 0; margin-top: 2px; }
+  .badge.open { background: var(--red-bg); color: var(--red); border: 1px solid #D4A0A0; }
+  .badge.progress { background: var(--amber-bg); color: var(--amber); border: 1px solid #D4B060; }
+  .badge.resolved { background: var(--green-bg); color: var(--green); border: 1px solid #90C4A0; }
+  .badge.high { background: var(--red-bg); color: var(--red); border: 1px solid #D4A0A0; }
+  .badge.medium { background: var(--amber-bg); color: var(--amber); border: 1px solid #D4B060; }
+  .badge.low { background: var(--green-bg); color: var(--green); border: 1px solid #90C4A0; }
+  .issue-text .title { font-weight: 500; color: var(--text); margin-bottom: 3px; }
+  .issue-text .desc { color: var(--text-secondary); line-height: 1.5; font-weight: 300; }
+
+  /* Parcel grid */
+  .parcel-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 14px 0; }
+  .parcel-card { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 12px 14px; }
+  .parcel-card .pcn { font-family: var(--mono); font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; }
+  .parcel-card .ptype { display: inline-block; font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.07em; padding: 2px 6px; border-radius: 2px; margin-bottom: 6px; }
+  .parcel-card .ptype.commercial { background: var(--accent-light); color: var(--accent); }
+  .parcel-card .ptype.residential { background: var(--amber-bg); color: var(--amber); }
+  .parcel-card .pname { font-weight: 500; font-size: 13px; color: var(--text); margin-bottom: 4px; }
+  .parcel-card .pdetails { font-family: var(--mono); font-size: 11px; color: var(--text-secondary); line-height: 1.6; }
+  .parcel-card .pvalue { font-family: var(--mono); font-size: 11px; color: var(--accent); font-weight: 500; margin-top: 5px; border-top: 1px solid var(--bg); padding-top: 5px; }
+
+  /* Timeline */
+  .timeline { margin: 14px 0; }
+  .timeline-row { display: flex; gap: 0; }
+  .tl-node { flex: 1; position: relative; padding: 0 0 20px 0; }
+  .tl-node::before { content: ''; position: absolute; top: 10px; left: 0; right: 0; height: 2px; background: var(--border); }
+  .tl-node:first-child::before { left: 50%; }
+  .tl-node:last-child::before { right: 50%; }
+  .tl-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); border: 2px solid var(--surface); position: absolute; top: 6px; left: 50%; transform: translateX(-50%); z-index: 1; }
+  .tl-dot.warn { background: var(--amber); }
+  .tl-dot.key { background: var(--red); }
+  .tl-content { text-align: center; padding-top: 26px; }
+  .tl-date { font-family: var(--mono); font-size: 10px; font-weight: 500; color: var(--accent); }
+  .tl-label { font-size: 12px; font-weight: 400; color: var(--text); margin-top: 2px; line-height: 1.4; }
+  .tl-sub { font-family: var(--mono); font-size: 10px; color: var(--text-secondary); margin-top: 2px; }
+
+  .divider { height: 1px; background: var(--border); margin: 40px 0; }
+  .footer { font-family: var(--mono); font-size: 11px; color: var(--text-secondary); text-align: center; }
+  
+  /* Comp table highlight */
+  .comp-highlight { background: var(--accent-light); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="doc-header">
+    <h1>Gulfstream Bays — Project Summary</h1>
+    <div class="sub">Working Document · Auto Condo Development · Boynton Beach, FL</div>
+    <div class="meta">
+      <span><strong>Site:</strong> 3860 / 3908 N Federal Highway</span>
+      <span><strong>Units:</strong> 35 (target)</span>
+      <span><strong>Site Area:</strong> ~2.66 acres (5 parcels)</span>
+      <span><strong>Unit Size:</strong> 2,400 SF</span>
+      <span><strong>Purchase Price:</strong> $9,000,000</span>
+      <span><strong>Status:</strong> Due Diligence Period</span>
+      <span><strong>Hard Deadline:</strong> Close by Feb 2027</span>
+      <span><strong>Updated:</strong> March 2026</span>
+    </div>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc">
+    <h3>Contents</h3>
+    <ul class="toc-list">
+      <li><a href="#overview">Project Overview</a></li>
+      <li><a href="#deal">Land Deal Structure &amp; Timeline</a></li>
+      <li><a href="#parcels">Parcel Details (PAPA)</a></li>
+      <li><a href="#product">Product Definition</a></li>
+      <li><a href="#economics">Development Economics</a></li>
+      <li><a href="#market">Competitive Analysis</a></li>
+      <li><a href="#capital">Capital Stack</a></li>
+      <li><a href="#diligence">Due Diligence — Six Go/No-Go Factors</a></li>
+      <li><a href="#risks">Key Risks &amp; Open Issues</a></li>
+      <li><a href="#openqs">Additional Open Questions</a></li>
+    </ul>
+  </div>
+
+  <!-- 01 OVERVIEW -->
+  <div class="section" id="overview">
+    <div class="section-label">01</div>
+    <h2>Project Overview</h2>
+    <p>Gulfstream Bays is a proposed 35-unit luxury auto condo development in Boynton Beach, Florida, targeting Palm Beach County's high-net-worth collector vehicle community. Each unit is 2,400 SF (1,800 SF ground floor + 600 SF mezzanine), delivered as a blank canvas with basic finishes, and sold fee-simple at a target price of ~$680/SF (~$1.63M per unit).</p>
+    <p>The site is assembled from five parcels on N Federal Highway — three commercially zoned, two residentially zoned — all currently owned by Blaque Ink LLC. The assemblage is unincorporated Palm Beach County for four parcels; one parcel (3908 N Federal) falls within the City of Boynton Beach.</p>
+    <div class="numbers-row">
+      <div class="num-cell"><div class="big-number">35</div><div class="number-label">Target Units</div></div>
+      <div class="num-cell"><div class="big-number">2,400</div><div class="number-label">SF / Unit</div></div>
+      <div class="num-cell"><div class="big-number">$1.63M</div><div class="number-label">Target Price / Unit</div></div>
+      <div class="num-cell"><div class="big-number">~$57M</div><div class="number-label">Gross Revenue (100%)</div></div>
+    </div>
+  </div>
+
+  <!-- 02 DEAL STRUCTURE -->
+  <div class="section" id="deal">
+    <div class="section-label">02</div>
+    <h2>Land Deal Structure &amp; Timeline</h2>
+
+    <p>The deal is structured in three phases: a free look period, a hard money phase, and a closing deadline. The structure provides meaningful downside protection — the developer can exit during diligence for $0 if zoning, site plan, costs, or investor appetite do not pencil.</p>
+
+    <table class="data-table">
+      <tr><th>Term</th><th>Detail</th><th class="note">Notes</th></tr>
+      <tr><td class="label">Purchase Price</td><td class="value">$9,000,000</td><td class="note">Full assemblage of 5 parcels</td></tr>
+      <tr><td class="label">Earnest Money Deposit</td><td class="value">$200,000</td><td class="note">Held in escrow at signing</td></tr>
+      <tr><td class="label">Due Diligence Period</td><td class="value">6 months (free look)</td><td class="note">Deposit fully refundable; walk away for any reason</td></tr>
+      <tr><td class="label">Hard Money Date</td><td class="value">Month 6</td><td class="note">$200K goes non-refundable after DD period</td></tr>
+      <tr><td class="label">Outside Closing Deadline</td><td class="value">End of February 2027</td><td class="note">Must close by this date regardless</td></tr>
+      <tr><td class="label">Land Cost per SF (site)</td><td class="value">~$78/SF</td><td class="note">$9M ÷ ~115,870 SF site area</td></tr>
+      <tr><td class="label">Land as % of Total Project Cost</td><td class="value">~26%</td><td class="note">$9M ÷ $34.7M all-in</td></tr>
+    </table>
+
+    <h3>Deal Timeline</h3>
+    <div class="timeline">
+      <div class="timeline-row">
+        <div class="tl-node">
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-date">NOW</div>
+            <div class="tl-label">Contract Signed</div>
+            <div class="tl-sub">$200K escrow deposited</div>
+          </div>
+        </div>
+        <div class="tl-node">
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-date">MONTHS 1–5</div>
+            <div class="tl-label">Free Diligence Period</div>
+            <div class="tl-sub">Zoning, site plan, GC pricing, pre-sales, investor circles</div>
+          </div>
+        </div>
+        <div class="tl-node">
+          <div class="tl-dot warn"></div>
+          <div class="tl-content">
+            <div class="tl-date">MONTH 6</div>
+            <div class="tl-label">Go / No-Go Decision</div>
+            <div class="tl-sub">$200K goes hard — or walk away</div>
+          </div>
+        </div>
+        <div class="tl-node">
+          <div class="tl-dot key"></div>
+          <div class="tl-content">
+            <div class="tl-date">FEB 2027</div>
+            <div class="tl-label">Outside Closing Deadline</div>
+            <div class="tl-sub">Must close by end of month</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout green">
+      <strong>Maximum At-Risk Capital During Diligence: $200,000</strong>
+      Before the hard money date, the developer can exit the deal for any reason and recover the full $200K deposit. This 6-month window is sufficient to validate all five critical go/no-go factors before committing to the $9M land purchase.
+    </div>
+
+    <div class="callout amber">
+      <strong>Key Timing Risk: Feb 2027 Hard Deadline</strong>
+      The outside closing deadline creates a hard backstop. If permitting, financing, or investor sequencing takes longer than expected, there is no room to extend. The timeline from hard money (month 6) to closing needs to accommodate equity raise, construction loan commitment, and any remaining entitlement steps.
+    </div>
+  </div>
+
+  <!-- 03 PARCELS -->
+  <div class="section" id="parcels">
+    <div class="section-label">03</div>
+    <h2>Parcel Details — PAPA Data</h2>
+    <p>The site is an assemblage of five contiguous parcels, all owned by Blaque Ink LLC (Boca Raton). Three are commercially zoned; two are residentially zoned vacant lots. The commercially zoned parcels have existing improvements that will be demolished. The residential parcels will require rezoning to commercial/industrial use as part of the entitlement process — this is a key diligence item.</p>
+
+    <div class="parcel-grid">
+
+      <div class="parcel-card">
+        <div class="pcn">PCN: 00-43-46-04-17-000-0660</div>
+        <div class="ptype commercial">Commercial</div>
+        <div class="pname">3860 N Federal Hwy (Lot 66)</div>
+        <div class="pdetails">
+          Zoning: CG — General Commercial<br>
+          Municipality: Unincorporated PBC<br>
+          Acres: 0.884<br>
+          Existing Buildings: 3 (retail + 2 warehouses)<br>
+          &nbsp;&nbsp;Bldg 1: 2,672 SF retail (built 1952)<br>
+          &nbsp;&nbsp;Bldg 2: 4,158 SF warehouse (built 1969)<br>
+          &nbsp;&nbsp;Bldg 5: 3,600 SF warehouse (built 1979)<br>
+          Seller paid: $1,525,000 (Dec 2014)
+        </div>
+        <div class="pvalue">2025 Market Value: $1,676,093</div>
+      </div>
+
+      <div class="parcel-card">
+        <div class="pcn">PCN: 00-43-46-04-17-000-0670</div>
+        <div class="ptype commercial">Commercial</div>
+        <div class="pname">3860 N Federal Hwy (Lot 67)</div>
+        <div class="pdetails">
+          Zoning: CG — General Commercial<br>
+          Municipality: Unincorporated PBC<br>
+          Acres: 0.807<br>
+          Existing Buildings: 2 (retail + warehouse)<br>
+          &nbsp;&nbsp;Bldg 1: 3,591 SF retail (built 1974)<br>
+          &nbsp;&nbsp;Bldg 2: 6,250 SF warehouse (built 1975)<br>
+          Seller paid: $1,525,000 (Dec 2014)
+        </div>
+        <div class="pvalue">2025 Market Value: $1,423,141</div>
+      </div>
+
+      <div class="parcel-card">
+        <div class="pcn">PCN: 08-43-46-04-17-000-0680</div>
+        <div class="ptype commercial">Commercial</div>
+        <div class="pname">3908 N Federal Hwy (Lot 68)</div>
+        <div class="pdetails">
+          Zoning: C3 — Community Commercial<br>
+          Municipality: City of Boynton Beach<br>
+          Acres: 0.727<br>
+          Existing Building: 368 SF converted SFR/office (built 1949)<br>
+          Seller paid: $525,000 (Dec 2014)
+        </div>
+        <div class="pvalue">2025 Market Value: $671,366</div>
+      </div>
+
+      <div class="parcel-card">
+        <div class="pcn">PCN: 00-43-46-04-17-000-1100</div>
+        <div class="ptype residential">Residential</div>
+        <div class="pname">Old Dixie Hwy (Lot 110)</div>
+        <div class="pdetails">
+          Zoning: RM — Multi-Family Medium Density<br>
+          Municipality: Unincorporated PBC<br>
+          Acres: 0.115<br>
+          Existing: Vacant land<br>
+          Seller paid: $75,000 (Dec 2014)
+        </div>
+        <div class="pvalue">2025 Market Value: $160,000</div>
+      </div>
+
+      <div class="parcel-card">
+        <div class="pcn">PCN: 00-43-46-04-17-000-1110</div>
+        <div class="ptype residential">Residential</div>
+        <div class="pname">Old Dixie Hwy (Lot 111)</div>
+        <div class="pdetails">
+          Zoning: RM — Multi-Family Medium Density<br>
+          Municipality: Unincorporated PBC<br>
+          Acres: 0.127<br>
+          Existing: Vacant land<br>
+          Seller paid: $75,000 (Dec 2014)
+        </div>
+        <div class="pvalue">2025 Market Value: $164,080</div>
+      </div>
+
+    </div>
+
+    <h3>Assemblage Summary</h3>
+    <table class="data-table">
+      <tr><th>Item</th><th>Detail</th></tr>
+      <tr><td class="label">Total Parcels</td><td class="value">5</td></tr>
+      <tr><td class="label">Total Acreage</td><td class="value">~2.66 acres</td></tr>
+      <tr><td class="label">Commercially Zoned</td><td class="value">3 parcels (2.42 acres) — CG &amp; C3</td></tr>
+      <tr><td class="label">Residentially Zoned</td><td class="value">2 parcels (0.24 acres) — RM multi-family</td></tr>
+      <tr><td class="label">Existing Improvements</td><td class="value">~20,639 SF across 6 buildings (all to be demolished)</td></tr>
+      <tr><td class="label">Common Owner</td><td class="value">Blaque Ink LLC (Boca Raton) — acquired all parcels Dec 2014</td></tr>
+      <tr><td class="label">2025 Combined Market Value (PAPA)</td><td class="value">~$4,094,680</td></tr>
+      <tr><td class="label">Purchase Price vs. PAPA Value</td><td class="value">$9,000,000 vs. $4,094,680 — paying ~2.2× assessed</td></tr>
+    </table>
+
+    <div class="callout amber">
+      <strong>Critical Diligence Item: Residential Parcel Rezoning</strong>
+      Lots 110 and 111 on Old Dixie Hwy are zoned RM (multi-family residential). These must be rezoned to commercial or industrial use before an auto condo project can be built. While they represent only ~0.24 acres of the ~2.66 acre assemblage, their rezoning approval is a prerequisite. Boynton Beach / unincorporated PBC's receptivity to this rezoning needs early confirmation.
+    </div>
+
+    <div class="callout amber">
+      <strong>Dual Jurisdiction: Split Between Unincorporated PBC and City of Boynton Beach</strong>
+      Four parcels are in unincorporated Palm Beach County; the fifth (Lot 68, 3908 N Federal) is within the City of Boynton Beach. This may require dealing with two separate permitting and entitlement authorities, which could complicate and extend the approval timeline.
+    </div>
+
+  </div>
+
+  <!-- 04 PRODUCT -->
+  <div class="section" id="product">
+    <div class="section-label">04</div>
+    <h2>Product Definition</h2>
+
+    <h3>Unit Configuration</h3>
+    <table class="data-table">
+      <tr><th>Component</th><th>Size</th><th class="note">Description</th></tr>
+      <tr><td class="label">Ground Floor</td><td class="value">1,800 SF</td><td class="note">Vehicle storage area with overhead door(s)</td></tr>
+      <tr><td class="label">Mezzanine</td><td class="value">600 SF</td><td class="note">Lounge / office / flex space above</td></tr>
+      <tr class="total"><td class="label">Total per Unit</td><td class="value">2,400 SF</td><td class="note">Fee-simple ownership</td></tr>
+      <tr><td class="label">Total Project GBA</td><td class="value">84,000 SF</td><td class="note">35 units × 2,400 SF</td></tr>
+    </table>
+
+    <h3>Base Finish Specification (Blank Canvas)</h3>
+    <p>Units are delivered with a defined but minimal finish package. The product is explicitly <em>not</em> turnkey — buyers customize to their own taste and collection. The base spec includes:</p>
+
+    <div class="two-col">
+      <div class="col-block">
+        <h4>Included at Delivery</h4>
+        <ul>
+          <li>Epoxy flooring (ground floor)</li>
+          <li>Finished bathroom (basic)</li>
+          <li>~15 LF of kitchen / wet bar cabinetry</li>
+          <li>Basic HVAC</li>
+          <li>Electrical panel (sized for lifts)</li>
+          <li>Overhead door(s) + entry door</li>
+          <li>CO2 exhaust ventilation</li>
+          <li>Individual unit security / access control</li>
+          <li>LED lighting</li>
+          <li>Fire suppression / sprinklers</li>
+        </ul>
+      </div>
+      <div class="col-block">
+        <h4>Buyer-Funded Upgrades (Typical)</h4>
+        <ul>
+          <li>Vehicle lifts ($10K–$40K each)</li>
+          <li>Custom cabinetry, millwork, bar</li>
+          <li>Enhanced HVAC / climate control</li>
+          <li>Upgraded flooring / wall systems</li>
+          <li>AV / entertainment systems</li>
+          <li>Custom lighting</li>
+          <li>Mezzanine lounge build-out</li>
+          <li>Car wash station</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <strong>Why This Spec Is Right for the Market</strong>
+      The base finish keeps construction cost manageable while delivering a fully functional and clean space. Buyers at this price point have strong personal preferences — they want to customize, not inherit someone else's vision. The 15 LF of kitchen and finished bath provide habitability and entertainment functionality right away, while leaving the canvas open. This is precisely the model CollectionSuites Palm Beach and The Paddocks of Delray use.
+    </div>
+  </div>
+
+  <!-- 05 ECONOMICS -->
+  <div class="section" id="economics">
+    <div class="section-label">05</div>
+    <h2>Development Economics</h2>
+
+    <h3>Revenue Assumptions</h3>
+    <table class="data-table">
+      <tr><th>Item</th><th>Amount</th><th class="note">Basis</th></tr>
+      <tr><td class="label">Target Price per SF</td><td class="value">$680</td><td class="note">Conservative vs. CollectionSuites at $699–$701/SF</td></tr>
+      <tr><td class="label">Unit Size</td><td class="value">2,400 SF</td><td class="note"></td></tr>
+      <tr><td class="label">Price per Unit</td><td class="value">$1,632,000</td><td class="note">2,400 × $680</td></tr>
+      <tr><td class="label">Number of Units</td><td class="value">35</td><td class="note">Subject to site plan confirmation</td></tr>
+      <tr class="total"><td class="label">Gross Revenue (100% sold)</td><td class="value">$57,120,000</td><td class="note"></td></tr>
+    </table>
+
+    <h3>Cost Model</h3>
+    <table class="data-table">
+      <tr><th>Cost Line</th><th>Amount</th><th class="note">Notes</th></tr>
+      <tr><td class="label">Acquisition Cost</td><td class="value">$9,000,000</td><td class="note">Full 5-parcel assemblage; fixed</td></tr>
+      <tr><td class="label">Entitlement Costs</td><td class="value">$926,250</td><td class="note">Land use attorney, annexation, site plan approvals, surveys</td></tr>
+      <tr><td class="label">Construction Costs</td><td class="value">$18,375,000</td><td class="note">Hard costs — GC-level estimate pending validation</td></tr>
+      <tr><td class="label">General &amp; Administrative</td><td class="value">$1,544,100</td><td class="note">Developer overhead, management, sales support</td></tr>
+      <tr><td class="label">Contingency</td><td class="value">$1,517,267</td><td class="note">~5% of total project cost</td></tr>
+      <tr><td class="label">Financing Costs</td><td class="value">$2,867,635</td><td class="note">Construction loan interest, fees, carry</td></tr>
+      <tr class="total"><td class="label">Total Project Cost (All-In)</td><td class="value">$34,730,253</td><td class="note">~$413/SF blended all-in on 84,000 SF GBA</td></tr>
+    </table>
+
+    <h3>Profit Summary</h3>
+    <table class="data-table">
+      <tr><th>Line</th><th>Amount</th><th class="note"></th></tr>
+      <tr><td class="label">Gross Revenue (35 units × $1,632,000)</td><td class="value">$57,120,000</td><td class="note">At $680/SF × 2,400 SF</td></tr>
+      <tr><td class="label">Less: Total Project Cost</td><td class="value">($34,730,253)</td><td class="note"></td></tr>
+      <tr><td class="label">Less: Sales / Marketing (est. 4%)</td><td class="value">($2,284,800)</td><td class="note">Broker commissions + marketing</td></tr>
+      <tr class="total"><td class="label">Net Profit (pre-tax, est.)</td><td class="value">~$20,104,947</td><td class="note"></td></tr>
+      <tr><td class="label">Profit Margin on Revenue</td><td class="value">~35%</td><td class="note"></td></tr>
+      <tr><td class="label">Return on Total Cost</td><td class="value">~58%</td><td class="note"></td></tr>
+    </table>
+
+    <div class="callout amber">
+      <strong>Construction Cost Validation Is the Critical Variable</strong>
+      The $18,375,000 construction cost line (~$219/SF on 84,000 SF GBA) has not yet been validated by a GC-level estimate. South Florida commercial construction with mezzanines, commercial MEP, and large overhead doors has been running $250–$300/SF post-COVID. If hard costs run at $250/SF, that adds ~$2.6M; at $300/SF, ~$6.8M additional — compressing net profit to ~$17.5M and ~$13.3M respectively. The project remains profitable across a wide range of outcomes, but this number must be confirmed before the hard money date.
+    </div>
+
+    <h3>Construction Cost Sensitivity</h3>
+    <table class="data-table">
+      <tr><th>Construction Cost Scenario</th><th>Total Construction</th><th>Total Project Cost</th><th>Net Profit (est.)</th><th>Margin</th></tr>
+      <tr><td class="label">Budget ($219/SF)</td><td class="value">$18.4M</td><td class="value">$34.7M</td><td class="value">~$20.1M</td><td class="value">35%</td></tr>
+      <tr><td class="label">$250/SF</td><td class="value">$21.0M</td><td class="value">$37.3M</td><td class="value">~$17.5M</td><td class="value">31%</td></tr>
+      <tr><td class="label">$275/SF</td><td class="value">$23.1M</td><td class="value">$39.4M</td><td class="value">~$15.4M</td><td class="value">27%</td></tr>
+      <tr><td class="label">$300/SF</td><td class="value">$25.2M</td><td class="value">$41.5M</td><td class="value">~$13.3M</td><td class="value">23%</td></tr>
+    </table>
+    <p style="font-size:11px; color:var(--text-secondary); font-family:var(--mono);">Sensitivity holds all other cost lines fixed; varies construction cost only. Revenue held at $57.12M gross.</p>
+  </div>
+
+  <!-- 06 COMPETITIVE ANALYSIS -->
+  <div class="section" id="market">
+    <div class="section-label">06</div>
+    <h2>Competitive Analysis</h2>
+
+    <p>Two direct comps have been identified in the Palm Beach County market: CollectionSuites Palm Beach (regional pricing benchmark) and The Paddocks of Delray (local operational comparable). Both validate the product concept and pricing range.</p>
+
+    <h3>Comp 1: CollectionSuites Palm Beach — Pricing Benchmark</h3>
+    <p>874 South Congress Ave, Palm Beach, FL 33046. An active auto condo project currently selling units ranging from 3,066 SF to 5,251 SF at prices from $2.145M to $3.675M. Delivered as a blank canvas with mezzanine loft areas. This is the primary pricing validation for Gulfstream Bays.</p>
+
+    <table class="data-table">
+      <tr><th>Suite</th><th>Total SF</th><th>Price</th><th>Price / SF</th><th class="note">Notes</th></tr>
+      <tr><td class="label">600 / 601</td><td class="value">3,066</td><td class="value">$2,145,000</td><td class="value">$699/SF</td><td class="note">Smallest units</td></tr>
+      <tr><td class="label">602 / 610–612</td><td class="value">3,525–3,532</td><td class="value">$2,470,000</td><td class="value">$700/SF</td><td class="note"></td></tr>
+      <tr><td class="label">603–605 / 613–617</td><td class="value">3,634–3,698</td><td class="value">$2,545,000–$2,590,000</td><td class="value">$699–$701/SF</td><td class="note"></td></tr>
+      <tr><td class="label">606 / 607</td><td class="value">3,909</td><td class="value">$2,735,000</td><td class="value">$700/SF</td><td class="note"></td></tr>
+      <tr><td class="label">608</td><td class="value">4,211</td><td class="value">$2,950,000</td><td class="value">$700/SF</td><td class="note"></td></tr>
+      <tr><td class="label">618 / 619</td><td class="value">4,447–4,481</td><td class="value">$3,115,000–$3,135,000</td><td class="value">$700/SF</td><td class="note"></td></tr>
+      <tr><td class="label">609 (largest)</td><td class="value">5,251</td><td class="value">$3,675,000</td><td class="value">$700/SF</td><td class="note">Suite 617 reserved</td></tr>
+      <tr class="total"><td class="label">Range</td><td class="value">3,066–5,251 SF</td><td class="value">$2.145M–$3.675M</td><td class="value">$699–$701/SF</td><td class="note">Remarkably consistent $/SF</td></tr>
+    </table>
+
+    <div class="callout green">
+      <strong>Key Takeaway: CollectionSuites</strong>
+      Pricing is strikingly consistent at $699–$701/SF regardless of unit size — suggesting this is the market-clearing rate for this product type in Palm Beach County right now. At 3,066–5,251 SF, CollectionSuites units are larger than the proposed 2,400 SF Gulfstream Bays units. This means Gulfstream Bays' $680/SF target is ~$20/SF below an active competitor offering larger units — a defensible price point.
+    </div>
+
+    <h3>Comp 2: The Paddocks of Delray — Local Operational Comp</h3>
+    <p>8790 W. Atlantic Ave, Delray Beach, FL 33446. A brand-new 2025 development of similar auto condo / man cave units. A 2,609 SF unit is currently listed for sale at $1,600,000 ($613/SF). Restrictive zoning — personal storage only (no commercial use). Located near FL Turnpike.</p>
+
+    <table class="data-table">
+      <tr><th>Item</th><th>Paddocks of Delray</th><th>Gulfstream Bays (target)</th></tr>
+      <tr><td class="label">Location</td><td>8790 W Atlantic Ave, Delray Beach</td><td>3860 N Federal Hwy, Boynton Beach</td></tr>
+      <tr><td class="label">Unit Size</td><td>±2,609 SF</td><td>2,400 SF</td></tr>
+      <tr><td class="label">Sale Price</td><td>$1,600,000</td><td>$1,632,000 (target)</td></tr>
+      <tr><td class="label">Price / SF</td><td>$613/SF</td><td>$680/SF (target)</td></tr>
+      <tr><td class="label">Ceiling Height</td><td>±25 ft</td><td>TBD (standard commercial)</td></tr>
+      <tr><td class="label">Zoning Use</td><td>Personal storage ONLY</td><td>Auto condo (fee-simple) — TBD</td></tr>
+      <tr><td class="label">Mezzanine</td><td>Yes (loft visible in photos)</td><td>Yes — 600 SF</td></tr>
+      <tr><td class="label">AC</td><td>100% air conditioned</td><td>Basic HVAC included</td></tr>
+      <tr><td class="label">Development Year</td><td>2025 (brand new)</td><td>TBD</td></tr>
+      <tr><td class="label">Proximity to I-95 / Coastal</td><td>Near Turnpike — inland</td><td>On Federal Hwy — better access</td></tr>
+    </table>
+
+    <div class="callout info">
+      <strong>Key Takeaway: The Paddocks of Delray</strong>
+      The Paddocks validates buyer demand for this product format in South Palm Beach County at $613/SF. However, it has a significant constraint: zoning restricts use to personal storage only, limiting the "man cave" / entertainment functionality that is a core part of the value proposition. Gulfstream Bays' fee-simple structure (if achieved) and more flexible zoning could justify a premium over The Paddocks. Note that at $613/SF, The Paddocks is ~$67/SF below the Gulfstream Bays target — suggesting there is a real pricing premium associated with the CollectionSuites-style product format.
+    </div>
+
+    <h3>Competitive Summary</h3>
+    <table class="data-table">
+      <tr><th></th><th class="comp-highlight">Gulfstream Bays (Target)</th><th>CollectionSuites PB</th><th>Paddocks of Delray</th></tr>
+      <tr><td class="label">Price / SF</td><td class="comp-highlight value">$680</td><td class="value">$699–$701</td><td class="value">$613</td></tr>
+      <tr><td class="label">Unit Size</td><td class="comp-highlight">2,400 SF</td><td>3,066–5,251 SF</td><td>2,609 SF</td></tr>
+      <tr><td class="label">Mezzanine</td><td class="comp-highlight">Yes — 600 SF</td><td>Yes</td><td>Yes (approx.)</td></tr>
+      <tr><td class="label">Ownership</td><td class="comp-highlight">Fee-simple (target)</td><td>Fee-simple</td><td>Fee-simple</td></tr>
+      <tr><td class="label">Delivery</td><td class="comp-highlight">Blank canvas</td><td>Blank canvas</td><td>Blank canvas</td></tr>
+      <tr><td class="label">Use Restriction</td><td class="comp-highlight">Auto condo (to be confirmed)</td><td>Collector/enthusiast</td><td>Personal storage ONLY</td></tr>
+      <tr><td class="label">Location</td><td class="comp-highlight">Boynton Beach, Federal Hwy</td><td>Palm Beach</td><td>Delray Beach, inland</td></tr>
+      <tr><td class="label">Status</td><td class="comp-highlight">Proposed</td><td>Active sales</td><td>New — for sale</td></tr>
+    </table>
+
+    <div class="callout green">
+      <strong>Pricing Conclusion</strong>
+      The market supports $613–$701/SF for this product type in Palm Beach County. Gulfstream Bays' $680/SF target sits in the upper third of the range, which is appropriate given its planned fee-simple structure, mezzanine, and Federal Highway access. The target is $20/SF below CollectionSuites (less prestigious address, smaller units) and $67/SF above The Paddocks (better use flexibility and location). The pricing is defensible.
+    </div>
+  </div>
+
+  <!-- 07 CAPITAL STACK -->
+  <div class="section" id="capital">
+    <div class="section-label">07</div>
+    <h2>Capital Stack</h2>
+    <p>LTC ratios are applied to total project cost excluding financing costs ($31,862,618), which is standard practice — the cost of debt is not itself debt-financed. Equity is split 85% investor / 15% sponsor. All return projections assume a 36-month timeline to full sellout.</p>
+
+    <h3>Capitalization</h3>
+    <table class="data-table">
+      <tr><th>Component</th><th>Amount</th><th>%</th><th class="note">Notes</th></tr>
+      <tr><td class="label">Senior Debt (60% LTC)</td><td class="value">$19,117,570</td><td class="value">60%</td><td class="note">Construction loan; lender TBD; pre-sale requirements apply</td></tr>
+      <tr><td class="label">Total Equity (40% LTC)</td><td class="value">$12,745,047</td><td class="value">40%</td><td class="note"></td></tr>
+      <tr><td class="label">&nbsp;&nbsp;↳ Sponsor Equity (15%)</td><td class="value">$1,911,757</td><td class="value">6%</td><td class="note">15% of equity tranche</td></tr>
+      <tr><td class="label">&nbsp;&nbsp;↳ Investor Equity (85%)</td><td class="value">$10,833,290</td><td class="value">34%</td><td class="note">85% of equity tranche</td></tr>
+      <tr class="total"><td class="label">Total Capitalization</td><td class="value">$31,862,617</td><td class="value">100%</td><td class="note">Excl. financing costs; +$2,867,635 financed via loan</td></tr>
+    </table>
+
+    <h3>Investor Returns</h3>
+    <table class="data-table">
+      <tr><th>Metric</th><th>Investor (LP)</th><th>Sponsor (GP)</th></tr>
+      <tr><td class="label">Equity Contribution</td><td class="value">$10,833,290</td><td class="value">$1,911,757</td></tr>
+      <tr><td class="label">Preferred Return</td><td class="value">8% (deferred to exit)</td><td class="value">None</td></tr>
+      <tr><td class="label">Profit Participation</td><td class="value">65% of net profits</td><td class="value">35% of net profits</td></tr>
+      <tr><td class="label">Projected Profit Participation</td><td class="value">$15,463,331</td><td class="value">$6,926,415</td></tr>
+      <tr><td class="label">Projected ROI</td><td class="value">142.74%</td><td class="value">362.31%</td></tr>
+      <tr class="total"><td class="label">Projected IRR (36-month)</td><td class="value">34.39%</td><td class="value">66.59%</td></tr>
+    </table>
+
+    <div class="callout info">
+      <strong>Distribution Waterfall</strong>
+      (1) Repayment of all senior debt and project-level obligations → (2) 8% non-compounding preferred return to investors, accrued from funding date, paid at exit → (3) Return of investor capital → (4) 65% to investors / 35% to sponsor on remaining net profits.
+    </div>
+
+    <div class="callout amber">
+      <strong>Note on Total Project Cost vs. Capitalization</strong>
+      Total project cost all-in is $34,730,253. The capitalization table above covers $31,862,618 (excl. financing costs). The $2,867,635 financing cost line is effectively funded through the construction loan drawdown and interest accrual during the build period — it is not a separate equity requirement. All figures assume the project reaches full sellout within 36 months of construction start.
+    </div>
+
+    <ul class="issue-list">
+      <li>
+        <span class="badge progress">In Progress</span>
+        <div class="issue-text">
+          <div class="title">Construction lender not yet identified</div>
+          <div class="desc">No lenders with specific auto condo experience have been identified, but the South Florida commercial construction lending market is active. Private/bridge lenders (Builders Capital, Nelson Funding, and others) are active in the region and comfortable with condo sellout structures. The more relevant constraint is pre-sale thresholds — most lenders will want 30–50% of units under contract before funding. LTC, rate, and recourse terms still need validation.</div>
+        </div>
+      </li>
+      <li>
+        <span class="badge open">Open</span>
+        <div class="issue-text">
+          <div class="title">Pre-sale requirements for construction financing</div>
+          <div class="desc">Most construction lenders require 30–50% pre-sales or signed purchase agreements before funding. At 35 units, that means 11–18 signed contracts. This makes the reservation-to-contract pipeline a prerequisite for construction financing. Intersects directly with Go/No-Go Factor #5 (buyer demand validation).</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- 08 DUE DILIGENCE -->
+  <div class="section" id="diligence">
+    <div class="section-label">08</div>
+    <h2>Due Diligence — Six Go/No-Go Factors</h2>
+    <p>During the 6-month free-look period, six critical items must be resolved. Failure on any single factor is grounds to exit and recover the $200K deposit in full. All six are currently open — none has been validated.</p>
+
+    <ul class="issue-list">
+      <li>
+        <span class="badge open">Open</span>
+        <div class="issue-text">
+          <div class="title">1 — Zoning / Entitlement for Fee-Simple Auto Condos</div>
+          <div class="desc">Two of the five parcels are zoned RM (residential multi-family) and must be rezoned. The commercially zoned parcels span two jurisdictions (Unincorporated PBC + City of Boynton Beach) with two different zoning codes (CG and C3). Fee-simple auto condo as a use category may require a special exception, rezoning, or conditional use approval. This is the foundational go/no-go item and should be the first diligence task initiated — ideally with a land use attorney in week one.</div>
+        </div>
+      </li>
+      <li>
+        <span class="badge open">Open</span>
+        <div class="issue-text">
+          <div class="title">2 — Site Plan Feasibility for 35 Units on 2.66 Acres</div>
+          <div class="desc">35 units × 2,400 SF = 84,000 SF of building on ~2.66 acres. An architect / civil engineer must confirm this density is achievable with required setbacks, fire access lanes, stormwater, and parking. If the site maxes out at 28–30 units, revenue drops by $8–11M. This needs an early conceptual site plan — before investing heavily in other diligence.</div>
+        </div>
+      </li>
+      <li>
+        <span class="badge progress">Spec Defined</span>
+        <div class="issue-text">
+          <div class="title">3 — Lift Capacity: Structural Slab &amp; Ceiling Height</div>
+          <div class="desc">Research confirms the required specification for new construction: <strong>6" slab at 4,000 PSI minimum with #4 rebar grid</strong>, plus thickened pads (8"+) at lift anchor point locations. This supports two-post lifts up to 12,000 lbs and four-post lifts up to 14,000 lbs — covering virtually all collector vehicles including heavy SUVs and exotics. For ceiling height, 16–18 ft clear is the target to allow a car on a four-post lift with comfortable clearance above. Since this is new construction, designing to this spec from day one costs minimal incremental and eliminates the issue entirely. <strong>Action: Write 6" / 4,000 PSI slab and 18 ft clear ceiling height into the structural program before GC pricing.</strong> This removes the question as a buyer objection before it arises.</div>
+        </div>
+      </li>
+
+      <li>
+        <span class="badge open">Open</span>
+        <div class="issue-text">
+          <div class="title">4 — Validated Construction Cost (GC-Level Estimate)</div>
+          <div class="desc">The $18,375,000 construction cost ($219/SF on 84,000 SF GBA) is the model's biggest exposed assumption. A pre-construction estimate or GC budgeting exercise is needed before the hard money date. This should encompass demolition of existing structures (~20,600 SF across 6 buildings), site work, the full structural and MEP build-out including mezzanines, and overhead door systems. If GC pricing comes in at $250–$300/SF, total project cost rises by $2.6M–$6.8M — reducing net profit from ~$20M toward ~$13–17M. Still viable, but the range matters significantly for investor returns and equity sizing.</div>
+        </div>
+      </li>
+      <li>
+        <span class="badge open">Open</span>
+        <div class="issue-text">
+          <div class="title">5 — Demonstrated Buyer Demand / Pre-Sales</div>
+          <div class="desc">Market pricing is validated by comps, but project-specific demand needs evidence. Target: refundable reservations, signed LOIs, or strong broker feedback with named prospects prior to the hard money date. Pre-sales also de-risk the construction financing conversation with lenders.</div>
+        </div>
+      </li>
+      <li>
+        <span class="badge open">Open</span>
+        <div class="issue-text">
+          <div class="title">6 — Equity Investor Commitments</div>
+          <div class="desc">~$10.8M in equity must be soft-circled before the hard money date and committed before land closes. Investor conversations should begin immediately — not after diligence completes. LP/GP terms, preferred return, and promote structure need to be defined first so conversations are productive.</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- 09 RISKS -->
+  <div class="section" id="risks">
+    <div class="section-label">09</div>
+    <h2>Key Risks &amp; Open Issues</h2>
+
+    <h3>Entitlement &amp; Site Risks</h3>
+    <ul class="issue-list">
+      <li>
+        <span class="badge high">High</span>
+        <div class="issue-text">
+          <div class="title">Residential Parcel Rezoning (Lots 110 &amp; 111)</div>
+          <div class="desc">Two parcels are zoned RM (multi-family residential). Rezoning to commercial/industrial is required and is not guaranteed. If denied or conditioned unfavorably, the effective site area shrinks and the unit count must be revised downward.</div>
+        </div>
+      </li>
+      <li>
+        <span class="badge high">High</span>
+        <div class="issue-text">
+          <div class="title">Dual Jurisdiction Complexity</div>
+          <div class="desc">One parcel is in the City of Boynton Beach; four are in Unincorporated PBC. This may require approval from two different planning and permitting bodies, creating coordination risk and potential for conflicting requirements.</div>
+        </div>
+      </li>
+      <li>
+        <span class="badge medium">Medium</span>
+        <div class="issue-text">
+          <div class="title">Site Plan Density — 35 Units May Not Fit</div>
+          <div class="desc">84,000 SF on 2.66 acres is a FAR of ~0.73 — achievable, but site coverage, setbacks, access lanes, and stormwater will all consume land. Each lost unit = ~$1.63M in gross revenue.</div>
+        </div>
+      </li>
+    </ul>
+
+    <h3>Financial Risks</h3>
+    <ul class="issue-list">
+      <li>
+        <span class="badge high">High</span>
+        <div class="issue-text">
+          <div class="title">Construction Cost Overrun</div>
+          <div class="desc">The model's most exposed assumption. Comparable South Florida commercial construction has been running $250–$300/SF post-COVID. A $50/SF overrun on 84,000 SF = $4.2M additional cost and reduces margin from 64% to ~57%. The project is still very profitable, but this variable needs validation before hard money.</div>
+        </div>
+      </li>
+      <li>
+        <span class="badge medium">Medium</span>
+        <div class="issue-text">
+          <div class="title">Land Cost Concentration (~49% of Total Cost)</div>
+          <div class="desc">At $9M, land represents nearly half of all-in development cost. There is no flexibility on this line item once the purchase closes — all cost overruns and any revenue shortfalls flow directly to developer profit.</div>
+        </div>
+      </li>
+      <li>
+        <span class="badge medium">Medium</span>
+        <div class="issue-text">
+          <div class="title">Absorption Timeline Not Modeled</div>
+          <div class="desc">The economics assume 100% sell-through but do not model timing. If 35 units take 36 months to sell rather than 18, carry costs increase and investor IRR compresses materially. An absorption schedule should be built into the model with conservative and optimistic scenarios.</div>
+        </div>
+      </li>
+      <li>
+        <span class="badge medium">Medium</span>
+        <div class="issue-text">
+          <div class="title">Feb 2027 Hard Closing Deadline</div>
+          <div class="desc">If entitlement or financing takes longer than expected, the outside closing date creates forced decision-making pressure. The window between the hard money date and the closing deadline must be sufficient to complete equity raise and construction loan commitment.</div>
+        </div>
+      </li>
+    </ul>
+
+    <h3>Market Risks</h3>
+    <ul class="issue-list">
+      <li>
+        <span class="badge progress">Monitor</span>
+        <div class="issue-text">
+          <div class="title">Competitive Supply Entering Market</div>
+          <div class="desc">CollectionSuites is actively selling; The Paddocks of Delray is brand new. If additional auto condo projects enter Palm Beach County during the development and sales timeline, pricing competition could emerge in what is still a nascent market.</div>
+        </div>
+      </li>
+      <li>
+        <span class="badge progress">Monitor</span>
+        <div class="issue-text">
+          <div class="title">Discretionary Purchase Sensitivity</div>
+          <div class="desc">At $1.6M, this is a discretionary luxury purchase. UHNW buyers are less rate-sensitive but are not immune to equity market downturns or wealth effect contractions. The project is not underwriting against a specific macro scenario — but it's worth monitoring.</div>
+        </div>
+      </li>
+    </ul>
+
+    <h3>Resolved / De-Risked</h3>
+    <ul class="issue-list">
+      <li>
+        <span class="badge resolved">Resolved</span>
+        <div class="issue-text">
+          <div class="title">Pricing Validated by Active Market Comps</div>
+          <div class="desc">CollectionSuites ($699–$701/SF) and The Paddocks ($613/SF) bracket a market range. The $680/SF target is well-supported. This is the most important single validation in the entire model.</div>
+        </div>
+      </li>
+      <li>
+        <span class="badge resolved">Resolved</span>
+        <div class="issue-text">
+          <div class="title">Blank Canvas Delivery Model Confirmed as Market Standard</div>
+          <div class="desc">Both active comps deliver blank canvas spaces. Buyers prefer it. The ~15 LF kitchen / bath / epoxy spec is in line with or slightly below comp delivery standards — appropriately conservative for cost management.</div>
+        </div>
+      </li>
+      <li>
+        <span class="badge resolved">Resolved</span>
+        <div class="issue-text">
+          <div class="title">Purchase Price Reduced: $9.5M → $9.0M</div>
+          <div class="desc">The negotiated reduction from $9.5M to $9M saves $500K in land cost, improves margin modestly, and reduces the equity raise requirement by the same amount.</div>
+        </div>
+      </li>
+      <li>
+        <span class="badge resolved">Resolved</span>
+        <div class="issue-text">
+          <div class="title">Deal Structure Provides Meaningful Downside Protection</div>
+          <div class="desc">6-month free look, $200K deposit, hard money at month 6, close by Feb 2027. Maximum capital at risk during diligence = $200K. The structure is appropriate for the risk profile of the project.</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- 10 ADDITIONAL OPEN QUESTIONS -->
+  <div class="section" id="openqs">
+    <div class="section-label">10</div>
+    <h2>Additional Open Questions</h2>
+    <p>The following questions were identified through research and analysis during the diligence period. They are ranked in descending order of importance. Status reflects what has been determined to date.</p>
+
+    <ul class="issue-list">
+
+      <li>
+        <span class="badge progress">Partially Resolved</span>
+        <div class="issue-text">
+          <div class="title">1 — FEMA Flood Zone &amp; Site Elevation</div>
+          <div class="desc"><strong>Finding:</strong> Zone AE, BFE = 8 ft NAVD88 confirmed via Palm Beach County GIS (effective and pending maps are identical — no change incoming). The flood zone boundary does not cover the full site — it clips only the southeast corner near the Federal Highway frontage. The majority of the site (rear parcels, Old Dixie side) appears to fall in Zone X (minimal risk) based on parcel overlay mapping.<br><br>
+          <strong>Elevation data:</strong> A USGS elevation profile of the site shows the ground rises from approximately 6.5 ft NAVD at the Federal Highway frontage to ~11 ft toward the rear — a ~4.5 ft grade change across roughly 200 ft of site depth. The Federal Highway edge is approximately 1.5 ft below the BFE of 8 ft.<br><br>
+          <strong>Implications:</strong> (1) The front portion of the site requires fill to bring finished floor to minimum BFE + freeboard, targeting ~9–10 ft finished floor elevation. If only the southeast corner clips AE, fill scope may be limited — budget $50–150K depending on area affected. (2) The site's natural slope from front to back must be resolved in the civil design: auto condos require a level threshold at every overhead door. A sloped apron or grade break cannot be tolerated for exotic vehicle access. A uniform finished pad elevation is the recommended approach. (3) Flood insurance will be required by any construction lender on a Zone AE site, adding $3,000–8,000/year to operating costs — include in HOA budget projections.<br><br>
+          <strong>Next step:</strong> Order a topographic survey and Elevation Certificate. Confirm exact AE boundary versus X boundary at the parcel level. The FEMA FIRMette PDF (from msc.fema.gov) for panel covering this site should be pulled and reviewed with the civil engineer.
+          <br><br><em style="font-family:var(--mono);font-size:11px;color:var(--text-secondary);">Potential additional cost (not in pro forma): Site fill and grading $50,000–$150,000 depending on scope confirmed by survey. Flood insurance on Zone AE buildings ~$4,000–$8,000/year (HOA line item).</em></div>
+        </div>
+      </li>
+
+      <li>
+        <span class="badge progress">Partially Resolved</span>
+        <div class="issue-text">
+          <div class="title">2 — Florida Condo Pre-Sale Deposit Law</div>
+          <div class="desc"><strong>Finding:</strong> Florida Statutes §718.502 and §718.202 govern this directly. Key rules for a non-residential (auto) condo:<br><br>
+          (a) <strong>Refundable reservations are legal now</strong> — before the declaration is recorded and before binding contracts — as long as a reservation program is filed with the FL Division of Condominiums and the developer has a contractual interest in the land (which the current PSA provides). Reservation deposits must be escrowed with an independent agent and are immediately refundable on written request.<br><br>
+          (b) <strong>Binding purchase contracts cannot be executed</strong> until the developer files the full condominium documents with the Division and receives notification that the filing is proper.<br><br>
+          (c) For non-residential condos, deposits up to 10% of sale price must be escrowed, but the developer may substitute a surety bond or irrevocable letter of credit for some or all of the escrow requirement.<br><br>
+          <strong>Implication:</strong> A reservation campaign can begin immediately and legally. This is a significant tool — collecting 10–15 refundable reservations during the diligence period validates demand, de-risks the lender conversation, and costs nothing if the project doesn't proceed. <strong>Action: Engage a Florida condo attorney to set up the reservation program and escrow structure — this should happen in parallel with zoning diligence.</strong></div>
+        </div>
+      </li>
+
+      <li>
+        <span class="badge open">Open</span>
+        <div class="issue-text">
+          <div class="title">3 — Construction Financing / Lender Pre-Sale Requirements</div>
+          <div class="desc">The South Florida construction lending market is active and lenders familiar with condo sellout structures exist (Builders Capital, Nelson Funding, Bank OZK, and regional private lenders all active in the market). No lender with specific auto condo experience has been identified, but this is unlikely to be a hard barrier — the sellout structure is analogous to residential condo construction loans. The more important constraint is pre-sale thresholds: most lenders in this space require 30–50% of units under signed contract before funding. At 35 units, that means 11–18 signed purchase agreements. This makes the reservation-to-contract pipeline a prerequisite for construction financing, not just a nice-to-have. <strong>Action: Lender conversations should begin during the diligence period, before the hard money date, to understand specific pre-sale requirements.</strong></div>
+        </div>
+      </li>
+
+      <li>
+        <span class="badge open">Open</span>
+        <div class="issue-text">
+          <div class="title">4 — HOA / Condo Association Structure &amp; Monthly Dues</div>
+          <div class="desc">A condo association must be formed and funded for the ongoing management of common areas, gating/security, landscaping, insurance on common elements, and reserve contributions. Monthly dues are a buyer carrying cost and will be a question in every sales conversation. Dues that are too high compress buyer affordability; dues that are too low create underfunded reserves. For a 35-unit auto condo with gated access, security cameras, landscaping, and common area maintenance, estimated dues are likely $400–$800/month. The condo documents (declaration, bylaws, budget) must be drafted as part of the condo filing process. <strong>Action: Include HOA structure and pro forma budget in the condo attorney engagement.</strong><br><br><em style="font-family:var(--mono);font-size:11px;color:var(--text-secondary);">Potential additional costs (not in pro forma): Condo declaration drafting and filing $8,000–$15,000 (legal). HOA setup costs $2,000–$5,000. These are one-time costs that may already be captured within the entitlement cost line.</em></div>
+        </div>
+      </li>
+
+      <li>
+        <span class="badge open">Open</span>
+        <div class="issue-text">
+          <div class="title">5 — Environmental / Phase I ESA &amp; Demolition Scope</div>
+          <div class="desc">The site has six existing buildings totaling ~20,600 SF, constructed between 1949 and 1979. Two risks require investigation: (1) <strong>Asbestos-containing materials (ACM)</strong> are virtually certain in structures of this age — floor tiles, pipe insulation, roofing materials, and joint compounds commonly contained asbestos pre-1980. An asbestos survey and abatement plan are required before demolition and must be budgeted separately from general demolition. (2) <strong>Underground storage tanks (USTs) and petroleum contamination</strong> — the Federal Highway corridor in South Florida has a well-documented history of UST contamination from gas stations and auto-related uses. A Phase I Environmental Site Assessment (ESA) will flag any known or suspected contamination from adjacent or prior uses. If a Phase II (soil/groundwater sampling) is triggered, timeline and cost could be material. <strong>Action: Order Phase I ESA immediately — it is standard due diligence and should be completed within the first 60 days of the diligence period.</strong> Budget $3,500–$6,000 for Phase I; asbestos survey additional $2,000–$4,000.<br><br><em style="font-family:var(--mono);font-size:11px;color:var(--text-secondary);">Potential additional costs (not in pro forma): Phase I ESA $3,500–$6,000. Asbestos survey $2,000–$4,000. ACM abatement prior to demolition $20,000–$80,000 depending on scope. Phase II (if triggered) $15,000–$40,000. Remediation, if required, $50,000–$500,000+ — the tail risk item to screen for early.</em></div>
+        </div>
+      </li>
+
+      <li>
+        <span class="badge open">Open</span>
+        <div class="issue-text">
+          <div class="title">6 — Overhead Door Sizing for Exotic / Wide-Body Vehicles</div>
+          <div class="desc">Standard commercial roll-up doors are typically 10 ft wide × 10 ft tall — adequate for most vehicles but tight for wide-body exotics (Lamborghini Urus, Ferrari Roma Spider with mirrors, lifted trucks) and insufficient for boats or large RVs. For a luxury auto condo targeting collectors, the minimum door specification should be <strong>12 ft wide × 14 ft tall</strong>, with 14 ft × 14 ft preferred for the broadest vehicle compatibility. Door sizing affects structural header design and unit width, so this must be defined in the architectural program before construction drawings. This is a spec decision, not a discovery item — but it needs to be made explicitly and documented before GC pricing. A door that's too narrow is a defect that cannot be corrected post-construction.</div>
+        </div>
+      </li>
+
+      <li>
+        <span class="badge open">Open</span>
+        <div class="issue-text">
+          <div class="title">7 — Electrical Capacity: 200A Service per Unit + EV Charging</div>
+          <div class="desc">Each unit will require significant electrical load: two-post lift motor (~3A at 220V), HVAC (10–20A), LED lighting, receptacles, and increasingly, EV charging. A Level 2 EV charger (32A at 240V) is now a baseline expectation for the UHNW buyer demographic — many will have multiple EVs or hybrids. The electrical design must confirm: (a) <strong>200A minimum service per unit</strong> with panel sized for lift, HVAC, and two EV charger circuits; (b) <strong>conduit stub-out for EV charging</strong> included in base spec even if chargers are buyer-supplied; (c) <strong>utility transformer capacity</strong> — 35 units at 200A each is 7,000A aggregate demand. The utility (FPL) must confirm available capacity at this location and any upgrade costs. Utility capacity constraints are a project risk that is often discovered late. <strong>Action: Contact FPL during diligence to confirm transformer availability.</strong><br><br><em style="font-family:var(--mono);font-size:11px;color:var(--text-secondary);">Potential additional costs (not in pro forma): FPL transformer upgrade if required $20,000–$100,000 (utility-dependent). Conduit rough-in for EV charging at all 35 units $1,500–$2,500/unit = $52,500–$87,500 — recommend including in base construction scope.</em></div>
+        </div>
+      </li>
+
+      <li>
+        <span class="badge open">Open</span>
+        <div class="issue-text">
+          <div class="title">8 — Title Review: Easements, Deed Restrictions &amp; Encumbrances</div>
+          <div class="desc">A five-parcel assemblage assembled across multiple ownerships and jurisdictions commonly carries easements, access restrictions, utility easements, or deed restrictions that can affect the site plan or limit uses. A preliminary title search on all five parcels should be ordered early in the diligence period. Key items to flag: any recorded easements crossing the site (utility, drainage, access), any deed restrictions that limit use to specific categories, any liens or encumbrances on the Blaque Ink LLC ownership, and any cross-parcel agreements between the five lots. Easements discovered post-contract can affect unit layout, density, and access — better to know now.</div>
+        </div>
+      </li>
+
+      <li>
+        <span class="badge open">Open</span>
+        <div class="issue-text">
+          <div class="title">9 — Stormwater &amp; Impervious Surface Requirements</div>
+          <div class="desc">An auto condo development is effectively 100% impervious — buildings, drive aisles, and parking leave minimal pervious surface on a 2.66-acre site. South Florida stormwater regulations (SFWMD and local) require retention or detention for a design storm event. On a tight urban infill site, stormwater management can consume a meaningful percentage of land area through retention ponds, dry wells, or underground exfiltration systems. Stormwater requirements also interact directly with the flood zone designation (Zone AE) and finished floor elevation requirements. This needs to be evaluated by the civil engineer as part of the early site plan feasibility work — it is a potential constraint on unit count if the retention footprint is large.</div>
+        </div>
+      </li>
+
+      <li>
+        <span class="badge open">Open</span>
+        <div class="issue-text">
+          <div class="title">10 — Resale Liquidity / Secondary Market for Auto Condos</div>
+          <div class="desc">The auto condo asset class is growing nationally — projects are active or recently launched in Fort Myers, Lakewood Ranch, Auburndale, Palm Beach, and Delray Beach — but it remains nascent enough that secondary market resale data is essentially nonexistent in this submarket. CollectionSuites and The Paddocks are both too new to have resale comps. Buyers at $1.6M will ask: "What is this worth in five years and how easily can I sell it?" The honest answer today is: unknown. The market trajectory is positive (growing collector car market, increasing demand, limited new supply), but liquidity risk is real and should be disclosed clearly in the offering. One approach is to proactively build a buyer community that creates its own secondary market liquidity — a waitlist of interested buyers to whom the developer facilitates resales. This is worth building into the marketing strategy from day one.</div>
+        </div>
+      </li>
+
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+  <p class="footer">Working document — Gulfstream Bays Development · Boynton Beach, FL · March 2026 · Update as diligence progresses</p>
+
+</div>
+</body>
+</html>
